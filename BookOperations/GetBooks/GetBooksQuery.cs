@@ -1,23 +1,28 @@
 using System;
 using System.Collections.Immutable;
-using myApi.Common;
+using MyApi.Common;
 using MyApi;
 using MyApi.DbOperations;
+using AutoMapper;
 
-namespace myApi.BookOperations.GetBooks;
+namespace MyApi.BookOperations.GetBooks;
 
 public class GetBooksQuery
 {
 
     private readonly BookStoreDbContext _dbContext;
-    public GetBooksQuery(BookStoreDbContext dbContext)
+    private readonly IMapper _mapper;
+    public GetBooksQuery(BookStoreDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
     }
-
     //Asıl işi yapacak method
     public List<BooksViewModel> Handle(){
         var bookList = _dbContext.Books.OrderBy(x => x.Id).ToList<Book>();
+        var vm = _mapper.Map<List<BooksViewModel>>(bookList);
+        return vm;
+        /* 
         List<BooksViewModel> vm = new List<BooksViewModel>();
 
         foreach (var item in bookList)
@@ -29,8 +34,7 @@ public class GetBooksQuery
                 Genre = ((GenreEnum)item.GenreId).ToString(),
                 PublishDate = item.PublishDate.Date.ToString("dd/MM/yyy"),
             });
-        } 
-        return vm;
+        }  */
     }
 }
 

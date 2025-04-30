@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using MyApi.DbOperations;
 
@@ -12,8 +13,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// (Gerekliyse) DbContext ve diğer servis kayıtları burada yapılmalı
-// builder.Services.AddDbContext<BoardGamesDBContext>(...);
+//automapper
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

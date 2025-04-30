@@ -1,6 +1,6 @@
 using System;
 
-namespace myApi.Common;
+namespace MyApi.Common;
 
 public enum GenreEnum
 {

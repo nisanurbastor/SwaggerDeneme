@@ -1,7 +1,7 @@
 using System;
 using MyApi.DbOperations;
 
-namespace myApi.BookOperations.UpdateBook;
+namespace MyApi.BookOperations.UpdateBook;
 
 public class UpdateBookCommand
 {

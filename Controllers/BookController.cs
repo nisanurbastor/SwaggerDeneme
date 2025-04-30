@@ -1,10 +1,16 @@
+using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using myApi.BookOperations.CreateBook;
 using myApi.BookOperations.DeleteBook;
 using myApi.BookOperations.GetBookDetail;
-using myApi.BookOperations.GetBooks;
 using myApi.BookOperations.UpdateBook;
+using MyApi.BookOperations.CreateBook;
+using MyApi.BookOperations.DeleteBook;
+using MyApi.BookOperations.GetBookDetail;
+using MyApi.BookOperations.GetBooks;
+using MyApi.BookOperations.UpdateBook;
 using MyApi.DbOperations;
 
 namespace MyApi.Controllers
@@ -18,11 +24,12 @@ namespace MyApi.Controllers
     {
         //_context bu kodda kullanacağım instance, context de inject edilen
         private readonly BookStoreDbContext _context;
-        public BookController(BookStoreDbContext context)
+        private readonly IMapper _mapper;
+        public BookController(BookStoreDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-
 
         //bu dbgenerator da var artık
         /* private static List<Book> BookList = new List<Book>()
@@ -56,7 +63,7 @@ namespace MyApi.Controllers
             /* var bookList = _context.Books.OrderBy(b => b.Id).ToList<Book>();
             return bookList; */
 
-            GetBooksQuery query = new GetBooksQuery(_context);
+            GetBooksQuery query = new GetBooksQuery(_context, _mapper);
             var result = query.Handle();
             return Ok(result);
         }
@@ -74,8 +81,10 @@ namespace MyApi.Controllers
 
             try
             {
-                GetBookDetailQuery query = new GetBookDetailQuery(_context);
+                GetBookDetailQuery query = new GetBookDetailQuery(_context, _mapper);
                 query.BookId = id;
+                GetBookDetailQueryValidator validator = new GetBookDetailQueryValidator();
+                validator.ValidateAndThrow(query);
                 result = query.Handle();
             }
             catch (Exception ex)
@@ -103,12 +112,25 @@ namespace MyApi.Controllers
         [HttpPost]
         public IActionResult AddBook([FromBody] CreateBookModel newBook)
         {
-            CreateBookCommand command = new CreateBookCommand(_context);
+            CreateBookCommand command = new CreateBookCommand(_context, _mapper);
 
             try
             {
                 command.Model = newBook;
+                //Validasyonu burda yapmalıyız çünkü eğer doğrulamada sorun varsa kodun handle methodunu hiç çalıştırmamasını istiyoruz.
+                CreateBookCommandValidator  validator = new CreateBookCommandValidator();
+                //aşağıda foreachle console a yazdırdığımızı exception olaral fırlatıyor
+                validator.ValidateAndThrow(command);
                 command.Handle();
+                //result da hata varsa yani null değilse
+
+                /*
+                ValidationResult result =  validator.Validate(command); 
+                if(!result.IsValid)
+                    foreach (var item in result.Errors)
+                        Console.WriteLine("Özellik : " + item.PropertyName +  " - Error message : " + item.ErrorMessage);
+                else
+                    command.Handle(); */            
             }
             catch (Exception ex)
             {
@@ -122,13 +144,15 @@ namespace MyApi.Controllers
         // put ile seçilen bir eleman düzenlenebilir
         [HttpPut("{id}")]
         public IActionResult UpdateBook(int id, [FromBody] UpdateBookCommandModel updatedBook)
-        { 
-            
+        {
+
             try
             {
                 UpdateBookCommand command = new UpdateBookCommand(_context);
                 command.BookId = id;
                 command.Model = updatedBook;
+                UpdateBookCommandValidator validator = new UpdateBookCommandValidator();
+                validator.ValidateAndThrow(command);
                 command.Handle();
             }
             catch (Exception ex)
@@ -137,7 +161,7 @@ namespace MyApi.Controllers
             }
 
             return Ok();
-            
+
             //Frombody den Book u alıyor
             /* var book = _context.Books.SingleOrDefault(b => b.Id == id);
 
@@ -154,13 +178,15 @@ namespace MyApi.Controllers
             return Ok(); */
         }
 
-        [HttpDelete("{title}")]
-        public IActionResult DeleteBook(string title)
+        [HttpDelete("{id}")]
+        public IActionResult DeleteBook(int id)
         {
             try
             {
                 DeleteBookCommand command = new DeleteBookCommand(_context);
-                command.BookTitle = title;
+                DeleteBookCommandValidator validator = new DeleteBookCommandValidator();
+                command.BookId = id;
+                validator.ValidateAndThrow(command);
                 command.Handle();
             }
             catch (Exception ex)

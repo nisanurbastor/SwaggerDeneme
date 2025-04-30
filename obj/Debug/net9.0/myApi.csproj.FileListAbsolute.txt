@@ -45,3 +45,9 @@
 /Users/nisanurbastor/Desktop/staj/pratikler/MyApi/bin/Debug/net9.0/Microsoft.Extensions.Logging.Abstractions.dll
 /Users/nisanurbastor/Desktop/staj/pratikler/MyApi/bin/Debug/net9.0/Microsoft.Extensions.Options.dll
 /Users/nisanurbastor/Desktop/staj/pratikler/MyApi/bin/Debug/net9.0/Microsoft.Extensions.Primitives.dll
+/Users/nisanurbastor/Desktop/staj/pratikler/MyApi/bin/Debug/net9.0/AutoMapper.dll
+/Users/nisanurbastor/Desktop/staj/pratikler/MyApi/bin/Debug/net9.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+/Users/nisanurbastor/Desktop/staj/pratikler/MyApi/obj/Debug/net9.0/myApi.sourcelink.json
+/Users/nisanurbastor/Desktop/staj/pratikler/MyApi/bin/Debug/net9.0/FluentValidation.dll
+/Users/nisanurbastor/Desktop/staj/pratikler/MyApi/bin/Debug/net9.0/FluentValidation.AspNetCore.dll
+/Users/nisanurbastor/Desktop/staj/pratikler/MyApi/bin/Debug/net9.0/FluentValidation.DependencyInjectionExtensions.dll

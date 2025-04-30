@@ -1,13 +1,13 @@
 using System;
 using MyApi.DbOperations;
 
-namespace myApi.BookOperations.DeleteBook;
+namespace MyApi.BookOperations.DeleteBook;
 
 public class DeleteBookCommand
 {
     private readonly BookStoreDbContext _dbContext;
 
-    public string BookTitle { get; set; }
+    public int BookId { get; set; }
     public DeleteBookCommand(BookStoreDbContext dbContext)
     {
         _dbContext = dbContext;
@@ -15,9 +15,9 @@ public class DeleteBookCommand
 
     public void Handle()
     {
-        var book = _dbContext.Books.Where(b => b.Title == BookTitle).SingleOrDefault();
+        var book = _dbContext.Books.Where(b => b.Id == BookId).SingleOrDefault();
         if(book is null)
-            throw new InvalidOperationException("Bu isimde bir kitap yoktur.");
+            throw new InvalidOperationException("Bu Id ile eşleşen herhangi bir kitap yoktur.");
         
         _dbContext.Books.Remove(book);
         _dbContext.SaveChanges();
